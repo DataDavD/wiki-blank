@@ -1,4 +1,4 @@
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponse
 from django.shortcuts import render
 
 from . import util
@@ -9,12 +9,10 @@ def index(request):
         "entries": util.list_entries()
     })
 
-def entry(request, entry):
-    content = util.get_entry(entry)
-    if content is None:
+
+def entry(request, title):
+    html_response = util.convert_to_html(title)
+    if html_response is None:
         raise Http404("Entry does not exist")
     
-    return render(request, "encyclopedia/entry_page.html", {
-        "content" : content
-        ## convert  md
-    })
+    return HttpResponse(html_response)
